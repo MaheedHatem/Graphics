@@ -24,7 +24,7 @@ Tuna::Tuna(float x , float y , float z , float s , GLuint TextureID,
     :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID,MatrixID){
     body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"body.bmp","Tuna.obj");
     eyes = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"eyes.bmp","Eyes.obj");
-    mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"eyes.bmp","Mouth.obj");
+    mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"body.bmp","Mouth.obj");
     shearvalue = 0;
     inc = true;
 }
