@@ -74,6 +74,10 @@ add_executable(main
 	Fish/Shark.h
 	Fish/FishPart.cpp
 	Fish/FishPart.h
+	Environ/Ground.cpp
+	Environ/Ground.h
+	Environ/Waves.cpp
+	Environ/Waves.h
 	main/TransformVertexShader.vertexshader
 	main/TextureFragmentShader.fragmentshader
 )
