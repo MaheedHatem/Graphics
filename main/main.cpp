@@ -20,6 +20,8 @@ using namespace glm;
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
 #include "Fish/Tuna.h"
+#include "Fish/Salmon.h"
+#include "Fish/Fawzy.h"
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
 #include "Fish/Shark.h"
@@ -77,6 +79,8 @@ int main( void )
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* salmon = new Salmon(0,-3,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
 	do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -86,10 +90,11 @@ int main( void )
         // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(-1,0,0),glm::vec3(0,1,0));
+        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
-
+        fawzy->draw(ViewMatrix,ProjectionMatrix);
+        salmon->draw(ViewMatrix,ProjectionMatrix);
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 
