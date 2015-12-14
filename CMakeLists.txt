@@ -72,6 +72,10 @@ add_executable(main
 	Fish/Tuna.h
 	Fish/Shark.cpp
 	Fish/Shark.h
+	Fish/Fawzy.cpp
+	Fish/Fawzy.h
+	Fish/Salmon.cpp
+	Fish/Salmon.h
 	Fish/FishPart.cpp
 	Fish/FishPart.h
 	Environ/Ground.cpp
