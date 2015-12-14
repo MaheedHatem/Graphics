@@ -10,7 +10,7 @@
 
 // Include GLM
 #include <glm/glm.hpp>
-#include "Waves.h"
+#include <Environ/Waves.h>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 

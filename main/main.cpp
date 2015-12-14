@@ -23,6 +23,7 @@ using namespace glm;
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
 #include "Fish/Shark.h"
+#include "Environ/Ground.h"
 int main( void )
 {
     // Initialise GLFW
@@ -59,7 +60,7 @@ int main( void )
     glfwPollEvents();
     glfwSetCursorPos(window, 1024/2, 768/2);
 	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glClearColor(0.176470588f, 0.443137255f, 0.768627451f, 0.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -77,6 +78,8 @@ int main( void )
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* ground = new Ground(0,-3,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
+    Obj* bg = new Ground(0,-3,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
 	do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -86,9 +89,11 @@ int main( void )
         // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(-1,0,0),glm::vec3(0,1,0));
+        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
+        ground->draw(ViewMatrix, ProjectionMatrix);
+        bg->draw(ViewMatrix, ProjectionMatrix);
 
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
