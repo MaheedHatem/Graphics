@@ -70,6 +70,8 @@ add_executable(main
 	Obj/Obj.h
 	Fish/Tuna.cpp
 	Fish/Tuna.h
+	Fish/Shark.cpp
+	Fish/Shark.h
 	Fish/FishPart.cpp
 	Fish/FishPart.h
 	main/TransformVertexShader.vertexshader

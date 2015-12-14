@@ -44,7 +44,7 @@ void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, Texture);
-    // Set our "myTextureSampler" sampler to user Texture Unit 0
+ //    Set our "myTextureSampler" sampler to user Texture Unit 0
     glUniform1i(TextureID, 0);
 
     // 1rst attribute buffer : vertices
@@ -59,6 +59,8 @@ void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 
     // Draw the triangles !
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
+    glActiveTexture(GL_TEXTURE0 + 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 void FishPart::setShear(float s){
     ShearMatrix[2].x = s;

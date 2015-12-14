@@ -22,6 +22,7 @@ using namespace glm;
 #include "Fish/Tuna.h"
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
+#include "Fish/Shark.h"
 int main( void )
 {
     // Initialise GLFW
@@ -75,7 +76,7 @@ int main( void )
 	// Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* tuna2 = new Tuna(5,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
 	do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -87,7 +88,7 @@ int main( void )
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(-1,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
-        tuna2->draw(ViewMatrix,ProjectionMatrix);
+        shark->draw(ViewMatrix,ProjectionMatrix);
 
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
