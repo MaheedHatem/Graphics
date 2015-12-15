@@ -20,11 +20,16 @@ using namespace glm;
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
 #include "Fish/Tuna.h"
+#include "Fish/Salmon.h"
+#include "Fish/Fawzy.h"
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
 #include "Fish/Shark.h"
 #include "Fish/Star.h"
 #include "Fish/Jellyfish.h"
+#include "Environ/Ground.h"
+#include "Background/Stone.h"
+#include "Background/Reef.h"
 int main( void )
 {
     // Initialise GLFW
@@ -61,7 +66,7 @@ int main( void )
     glfwPollEvents();
     glfwSetCursorPos(window, 1024/2, 768/2);
 	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glClearColor(0.176470588f, 0.443137255f, 0.768627451f, 0.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -81,21 +86,76 @@ int main( void )
     Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* jellyfish = new Jellyfish(-3,0,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
+    Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
+    Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
+
+    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
+    Obj* stone3 = new Stone(0.5,-8,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone4 = new Stone(-1.3,-7,0,2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone5 = new Stone(-3.5,-7,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone6 = new Stone(-6.5,-6.6,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone7 = new Stone(-6.8,-5.5,0,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
+
+    int plants_size = 11;
+    std::vector<Obj*> plants(plants_size);
+    float xlimit = 2.0;
+    float ylimit = 0;
+    float zlimit = 0;
+
+    for (int i = 0; i<4; i++) {
+        plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reef1.bmp", "reef1.obj");
+        xlimit-=0.75;
+        ylimit-=0.5;
+    }
+        xlimit = -2.5;
+    for (int i = 4; i<6; i++) {
+        plants.at(i)=new Reef(xlimit,-7+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reef1.bmp", "reef1.obj");
+        ylimit+=1;
+        xlimit-=0.75;
+    }
+
+    for(int i=6; i<plants_size; i++) {
+        plants.at(i)=new Reef(xlimit,-6+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reef1.bmp", "reef1.obj");
+        ylimit-=0.25;
+        xlimit-=0.75;
+    }
+
+
     do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Use our shader
 		glUseProgram(programID);
 
-        // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+        // Projection matrix : 45 Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(-1,0,0),glm::vec3(0,1,0));
+        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
         jellyfish->draw(ViewMatrix,ProjectionMatrix);
         star->draw(ViewMatrix,ProjectionMatrix);
+        ground->draw(ViewMatrix, ProjectionMatrix);
+        bg->draw(ViewMatrix, ProjectionMatrix);
 
+
+        stone0->draw(ViewMatrix, ProjectionMatrix);
+        stone1->draw(ViewMatrix, ProjectionMatrix);
+        stone2->draw(ViewMatrix, ProjectionMatrix);
+        stone3->draw(ViewMatrix,ProjectionMatrix);
+        stone4->draw(ViewMatrix,ProjectionMatrix);
+        stone5->draw(ViewMatrix,ProjectionMatrix);
+        stone6->draw(ViewMatrix,ProjectionMatrix);
+        stone7->draw(ViewMatrix,ProjectionMatrix);
+        for (int i =0 ;i<plants_size; i++) {
+            plants[i]->draw(ViewMatrix,ProjectionMatrix);
+        }
+        fawzy->draw(ViewMatrix,ProjectionMatrix);
+        salmon->draw(ViewMatrix,ProjectionMatrix);
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 
