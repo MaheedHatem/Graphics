@@ -91,6 +91,10 @@ add_executable(main
 
 	main/TransformVertexShader.vertexshader
 	main/TextureFragmentShader.fragmentshader
+	Fish/Jellyfish.cpp
+	Fish/Jellyfish.h
+	Fish/Star.h
+	Fish/Star.cpp
 )
 target_link_libraries(main
 	${ALL_LIBS}

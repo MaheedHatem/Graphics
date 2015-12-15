@@ -24,6 +24,8 @@ using namespace glm;
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
 #include "Fish/Shark.h"
+#include "Fish/Star.h"
+#include "Fish/Jellyfish.h"
 #include "Environ/Ground.h"
 #include "Background/Stone.h"
 #include "Background/Reef.h"
@@ -40,7 +42,7 @@ int main( void )
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Tutorial 07 - Model Loading", NULL, NULL);
+    window = glfwCreateWindow( 1024, 768, "Feeding Fawzy", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window.\n" );
 		getchar();
@@ -81,7 +83,8 @@ int main( void )
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-
+    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
 
@@ -133,6 +136,8 @@ int main( void )
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
+        jellyfish->draw(ViewMatrix,ProjectionMatrix);
+        star->draw(ViewMatrix,ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
@@ -148,7 +153,6 @@ int main( void )
         }
         fawzy->draw(ViewMatrix,ProjectionMatrix);
         salmon->draw(ViewMatrix,ProjectionMatrix);
-
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 
