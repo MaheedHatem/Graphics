@@ -14,7 +14,6 @@ GLFWwindow* window;
 
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
-
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -136,8 +135,6 @@ int main( void )
         shark->draw(ViewMatrix,ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
-
-
         stone0->draw(ViewMatrix, ProjectionMatrix);
         stone1->draw(ViewMatrix, ProjectionMatrix);
         stone2->draw(ViewMatrix, ProjectionMatrix);
