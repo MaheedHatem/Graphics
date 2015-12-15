@@ -23,6 +23,8 @@ using namespace glm;
 #include "Obj/Obj.h"
 #include "Fish/FishPart.h"
 #include "Fish/Shark.h"
+#include "Fish/Star.h"
+#include "Fish/Jellyfish.h"
 int main( void )
 {
     // Initialise GLFW
@@ -36,7 +38,7 @@ int main( void )
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Tutorial 07 - Model Loading", NULL, NULL);
+    window = glfwCreateWindow( 1024, 768, "Feeding Fawzy", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window.\n" );
 		getchar();
@@ -77,7 +79,9 @@ int main( void )
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-	do{
+    Obj* jellyfish = new Jellyfish(-3,0,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
+    do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Use our shader
@@ -89,6 +93,8 @@ int main( void )
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(-1,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
+        jellyfish->draw(ViewMatrix,ProjectionMatrix);
+        star->draw(ViewMatrix,ProjectionMatrix);
 
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
