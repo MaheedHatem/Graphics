@@ -81,16 +81,14 @@ int main( void )
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
 	// Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
-    Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    Obj* tuna1 = new Tuna(8,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* shark = new Shark(8,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
 
     Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* salmon = new Salmon(-8,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
@@ -115,6 +113,7 @@ int main( void )
     float xlimit = 2.0;
     float ylimit = 0;
     float zlimit = 0;
+    fawzy->invert(false);
     for (int i = 0; i<4; i++) {
         plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
         xlimit-=0.75;
@@ -133,7 +132,6 @@ int main( void )
         xlimit-=0.75;
     }
 
-
     do{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -146,8 +144,8 @@ int main( void )
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish2->draw(ViewMatrix,ProjectionMatrix);
+        //jellyfish->draw(ViewMatrix,ProjectionMatrix);
+        //jellyfish2->draw(ViewMatrix,ProjectionMatrix);
         star->draw(ViewMatrix,ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);

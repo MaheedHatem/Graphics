@@ -27,6 +27,9 @@ Salmon::Salmon(float x , float y , float z , float s , GLuint TextureID,
     mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Salmon.bmp","SalmonMouth.obj");
     shearvalue = 0;
     inc = true;
+    if(x>= 8){
+        this->invert(false);
+    }
 }
 void Salmon::setScaling(float s){
     Obj::setScaling(s);
@@ -64,4 +67,10 @@ void Salmon::updateShear(){
     body->setShear(shearvalue);
     mouth->setShear(shearvalue);
     eyes->setShear(shearvalue);
+}
+void Salmon::invert(bool z){
+    body->invert(false);
+    mouth->invert(false);
+    eyes->invert(false);
+    ScalingMatrix[0].x = - ScalingMatrix[0].x;
 }

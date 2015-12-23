@@ -27,6 +27,9 @@ Tuna::Tuna(float x , float y , float z , float s , GLuint TextureID,
     mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"body.bmp","Mouth.obj");
     shearvalue = 0;
     inc = true;
+    if(x>= 8){
+        this->invert(false);
+    }
 }
 void Tuna::setScaling(float s){
     Obj::setScaling(s);
@@ -64,4 +67,10 @@ void Tuna::updateShear(){
     body->setShear(shearvalue);
     mouth->setShear(shearvalue);
     eyes->setShear(shearvalue);
+}
+void Tuna::invert(bool z){
+    body->invert(false);
+    mouth->invert(false);
+    eyes->invert(false);
+    ScalingMatrix[0].x = -ScalingMatrix[0].x;
 }
