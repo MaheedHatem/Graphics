@@ -52,15 +52,15 @@ int RandomSign() {
 Tuna* GenerateTunaFish() {
     int signX = RandomSign();
     int signY = RandomSign();
-    float x = signX*8; // *8
-    float y = signY* ((rand()%30)*0.1); // rand()%6
+    float x = signX* ((rand()%12) + 8); // *8
+    float y = signY* ((rand()%300)*0.01); // rand()%6
     return new Tuna(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 Salmon* GenerateSalmonFish() {
     int signX = RandomSign();
     int signY = RandomSign();
-    float x = signX*8;
-    float y = signY* ((rand()%30)*0.1);
+    float x = signX* ((rand()%12) + 8);
+    float y = signY* ((rand()%300)*0.01);
     return new Salmon(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 
@@ -121,15 +121,9 @@ int main( void )
     std::vector<Obj*> Fish;
 
 
-    //Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    //Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    //Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    //Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    //Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
     Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    //Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
@@ -154,6 +148,7 @@ int main( void )
     float xlimit = 2.0;
     float ylimit = 0;
     float zlimit = 0;
+    fawzy->invert(false);
     for (int i = 0; i<4; i++) {
         plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
         xlimit-=0.75;
@@ -172,7 +167,6 @@ int main( void )
         xlimit-=0.75;
     }
 
-
     do{
 
 		// Clear the screen
@@ -184,15 +178,15 @@ int main( void )
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
+
         if (Fish.size() <15) {
-            Fish.push_back(GenerateTunaFish());
+            int random = rand()%2;
+            if (random == 1)
+             Fish.push_back(GenerateTunaFish());
+            else
             Fish.push_back(GenerateSalmonFish());
         }
-        //tuna1->draw(ViewMatrix,ProjectionMatrix);
-        //shark->draw(ViewMatrix,ProjectionMatrix);
-        //jellyfish->draw(ViewMatrix,ProjectionMatrix);
-        //jellyfish2->draw(ViewMatrix,ProjectionMatrix);
-        //star->draw(ViewMatrix,ProjectionMatrix);
+
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
@@ -223,11 +217,6 @@ int main( void )
 
         fawzy->draw(ViewMatrix,ProjectionMatrix);
 
-        /*
-        plant2->draw(ViewMatrix,ProjectionMatrix);
-        plant3->draw(ViewMatrix,ProjectionMatrix);
-        plant4->draw(ViewMatrix,ProjectionMatrix);
-        */
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
 

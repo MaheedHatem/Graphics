@@ -30,14 +30,23 @@ Obj::Obj(float x , float y , float z , float s, GLuint TextureID,
     this->vertexPosition_modelspaceID = vertexPosition_modelspaceID;
     this->MatrixID = MatrixID;
     this->TextureID = TextureID;
+
+
 }
 void Obj::setTranslation(float x, float y, float z){
     this->TranslationMatrix = translate(mat4(), vec3(x, y, z));
+ /*   this->TranslationMatrix[0][3] += 0.1;
+    this->TranslationMatrix[1].w += y;
+    this->TranslationMatrix[2].w += z;*/
 }
 
 void Obj::setScaling(float s){
      this->ScalingMatrix = scale(mat4(), vec3(s, s, s));
 }
+void Obj::invert(bool z){
+
+}
+
 Obj::~Obj(){
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteBuffers(1, &uvbuffer);
