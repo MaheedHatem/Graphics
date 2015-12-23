@@ -35,9 +35,6 @@ Obj::Obj(float x , float y , float z , float s, GLuint TextureID,
 }
 void Obj::setTranslation(float x, float y, float z){
     this->TranslationMatrix = translate(mat4(), vec3(x, y, z));
- /*   this->TranslationMatrix[0][3] += 0.1;
-    this->TranslationMatrix[1].w += y;
-    this->TranslationMatrix[2].w += z;*/
 }
 
 void Obj::setScaling(float s){

@@ -14,7 +14,7 @@
 #include "FishPart.h"
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
-
+#include <iostream>
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -25,6 +25,12 @@ Fawzy::Fawzy(float x , float y , float z , float s , GLuint TextureID,
     body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"fish.bmp","fish.obj");
     shearvalue = 0;
     inc = true;
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    dx = 0;
+    dy = 0;
+    right = true;
 }
 void Fawzy::setScaling(float s){
     Obj::setScaling(s);
@@ -37,8 +43,46 @@ void Fawzy::setTranslation(float x, float y, float z){
 
 void Fawzy::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
+    x+=dx;
+    y+=dy;
+    this->setTranslation(x,y,z);
     body->draw(ViewMatrix , ProjectionMatrix);
+    dx = 0;
+    dy = 0;
 }
+void Fawzy::movehoriz(bool r){
+    if(r){
+        if(x>-6.5){
+             dx = -0.5;
+        }
+        if(!right){
+            this->invert(false);
+            right = true;
+        }
+    }
+    else{
+        if(x < 6.5){
+            dx = 0.5;
+        }
+        if(right){
+            this->invert(false);
+            right = false;
+        }
+    }
+}
+void Fawzy::movevertic(bool u){
+    if(u){
+        if(y < 3){
+            dy = 0.5;
+        }
+    }
+    else{
+        if(y>-3){
+            dy = -0.5;
+        }
+    }
+}
+
 void Fawzy::updateShear(){
     if(inc){
         shearvalue+=0.05;

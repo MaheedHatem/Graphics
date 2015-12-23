@@ -50,6 +50,13 @@ srand(time(NULL));
         dx = 0;
     }
 }
+void FishPart::setTranslation(float x, float y, float z){
+    Obj::setTranslation(x , y , z);
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
 void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     x += dx;
     this->setTranslation(x,y,z);   //translates object with dx every time it is called

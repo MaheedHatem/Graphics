@@ -123,7 +123,7 @@ int main( void )
 
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
-    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Fawzy* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
@@ -148,7 +148,6 @@ int main( void )
     float xlimit = 2.0;
     float ylimit = 0;
     float zlimit = 0;
-    fawzy->invert(false);
     for (int i = 0; i<4; i++) {
         plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
         xlimit-=0.75;
@@ -178,7 +177,23 @@ int main( void )
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
-
+        //Moving Fawzy
+        if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS )
+        {
+            fawzy->movehoriz(false);
+        }
+        else if (glfwGetKey(window,  GLFW_KEY_RIGHT) ==GLFW_PRESS )
+        {
+            fawzy->movehoriz(true);
+        }
+        if (glfwGetKey(window,  GLFW_KEY_UP) ==GLFW_PRESS )
+        {
+            fawzy->movevertic(true);
+        }
+        else if (glfwGetKey(window,  GLFW_KEY_DOWN) ==GLFW_PRESS )
+        {
+            fawzy->movevertic(false);
+        }
         if (Fish.size() <15) {
             int random = rand()%2;
             if (random == 1)

@@ -4,6 +4,12 @@
 #include "FishPart.h"
 class Fawzy : public Obj {
 private:
+    float x;
+    float y;
+    float z;
+    float dx;
+    float dy;
+    bool right;
     void updateShear();
     float shearvalue;
     bool inc;
@@ -16,6 +22,8 @@ public:
     void setTranslation(float x, float y, float z);
     void setScaling(float s);
     void invert(bool z);
+    void movehoriz(bool r);
+    void movevertic(bool u);
     void draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
 };
 #endif
