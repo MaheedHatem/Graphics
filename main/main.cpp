@@ -1,7 +1,12 @@
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
 #include <vector>
+#include <iostream>
+#include <time.h>
+#include <unistd.h>
+using namespace std;
 
 // Include GLEW
 #include <GL/glew.h>
@@ -29,10 +34,41 @@ using namespace glm;
 #include "Environ/Ground.h"
 #include "Background/Stone.h"
 #include "Background/Reef.h"
+
+GLuint TextureID;
+GLuint vertexUVID;
+GLuint vertexPosition_modelspaceID;
+GLuint MatrixID;
+
+int RandomSign() {
+    /* initialize random seed: */
+    int sign = (rand()%2) - 1;
+    std::cout <<sign<<std::endl;
+    if (sign == 0) sign = 1;
+    std::cout <<sign<<std::endl;
+    return sign;
+}
+
+Tuna* GenerateTunaFish() {
+    int signX = RandomSign();
+    int signY = RandomSign();
+    float x = signX*8; // *8
+    float y = signY* ((rand()%30)*0.1); // rand()%6
+    return new Tuna(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+}
+Salmon* GenerateSalmonFish() {
+    int signX = RandomSign();
+    int signY = RandomSign();
+    float x = signX*8;
+    float y = signY* ((rand()%30)*0.1);
+    return new Salmon(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+}
+
 int main( void )
 {
     // Initialise GLFW
-	if( !glfwInit() )
+    srand (time(NULL));
+    if( !glfwInit() )
 	{
 		fprintf( stderr, "Failed to initialize GLFW\n" );
 		getchar();
@@ -71,26 +107,29 @@ int main( void )
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS); 
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);;
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 	// Get a handle for our "MVP" uniform
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    MatrixID = glGetUniformLocation(programID, "MVP");
 	// Get a handle for our buffers
-	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
-	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
+    vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
+    vertexUVID = glGetAttribLocation(programID, "vertexUV");
 	// Get a handle for our "myTextureSampler" uniform
-    GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
-    Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
+    TextureID  = glGetUniformLocation(programID, "myTextureSampler");
+
+    std::vector<Obj*> Fish;
+
+
+    //Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    //Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    //Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    //Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    //Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
-
     Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    //Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
@@ -135,6 +174,7 @@ int main( void )
 
 
     do{
+
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Use our shader
@@ -144,11 +184,15 @@ int main( void )
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
-        tuna1->draw(ViewMatrix,ProjectionMatrix);
-        shark->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish2->draw(ViewMatrix,ProjectionMatrix);
-        star->draw(ViewMatrix,ProjectionMatrix);
+        if (Fish.size() <15) {
+            Fish.push_back(GenerateTunaFish());
+            Fish.push_back(GenerateSalmonFish());
+        }
+        //tuna1->draw(ViewMatrix,ProjectionMatrix);
+        //shark->draw(ViewMatrix,ProjectionMatrix);
+        //jellyfish->draw(ViewMatrix,ProjectionMatrix);
+        //jellyfish2->draw(ViewMatrix,ProjectionMatrix);
+        //star->draw(ViewMatrix,ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
@@ -173,10 +217,13 @@ int main( void )
         for (int i =0 ;i<plants_size; i++) {
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
-        fawzy->draw(ViewMatrix,ProjectionMatrix);
-        salmon->draw(ViewMatrix,ProjectionMatrix);
-        /*
 
+        for (int i=0; i<Fish.size(); i++)
+            (Fish.at(i))->draw(ViewMatrix,ProjectionMatrix);
+
+        fawzy->draw(ViewMatrix,ProjectionMatrix);
+
+        /*
         plant2->draw(ViewMatrix,ProjectionMatrix);
         plant3->draw(ViewMatrix,ProjectionMatrix);
         plant4->draw(ViewMatrix,ProjectionMatrix);
