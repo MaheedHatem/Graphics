@@ -21,10 +21,10 @@ using namespace glm;
 #include <common/objloader.hpp>
 Salmon::Salmon(float x , float y , float z , float s , GLuint TextureID,
            GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID)
-    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID,MatrixID){
-    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Salmon.bmp","SalmonBody.obj");
-    eyes = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Salmon.bmp","SalmonEye.obj");
-    mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Salmon.bmp","SalmonMouth.obj");
+    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID, MatrixID){
+    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Salmon.bmp","SalmonBody.obj");
+    eyes = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Salmon.bmp","SalmonEye.obj");
+    mouth = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Salmon.bmp","SalmonMouth.obj");
     shearvalue = 0;
     inc = true;
     if(x>= 8){

@@ -12,7 +12,7 @@ FishPart* body;
 
 public:
     Shark(float x , float y , float z , float s, GLuint TextureID,
-         GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
+          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
     void updateTranslation();
     void setTranslation(float x, float y, float z);
     void setScaling(float s);

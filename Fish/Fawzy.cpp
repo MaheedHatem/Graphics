@@ -21,8 +21,8 @@ using namespace glm;
 #include <common/objloader.hpp>
 Fawzy::Fawzy(float x , float y , float z , float s , GLuint TextureID,
            GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID)
-    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID,MatrixID){
-    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"fish.bmp","fish.obj");
+    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID, MatrixID){
+    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"fish.bmp","fish.obj");
     shearvalue = 0;
     inc = true;
     this->x = x;

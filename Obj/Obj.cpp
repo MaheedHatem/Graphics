@@ -22,7 +22,7 @@ using namespace glm;
 
 
 Obj::Obj(float x , float y , float z , float s, GLuint TextureID,
-                      GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID){
+                      GLuint vertexUVID,GLuint vertexPosition_modelspaceID, GLuint MatrixID){
     this->TranslationMatrix = translate(mat4(), vec3(x, y, z));
     this->ScalingMatrix = scale(mat4(), vec3(s, s, s));
     this->ShearMatrix = glm::mat4(1.0f);
@@ -47,6 +47,7 @@ void Obj::invert(bool z){
 Obj::~Obj(){
     glDeleteBuffers(1, &vertexbuffer);
     glDeleteBuffers(1, &uvbuffer);
+    glDeleteBuffers(1, &vertexNormID);
     glDeleteBuffers(1, &normbuffer);
 }
 void Obj:: updateShear() {}

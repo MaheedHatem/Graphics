@@ -41,6 +41,28 @@ bool Waves::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+    glm::mat3 ModelInv = glm::mat3(ModelMatrix);
+    ModelInv = glm::transpose(glm::inverse(ModelInv));
+
+    glm::mat4 ModelInv2 = glm::mat4(1.0f);
+
+    for(int i =0; i <= 2; i++)
+    {
+        for(int j = 0; j <= 2; j++)
+        {
+            ModelInv2[i][j] = ModelInv[i][j];
+        }
+    }
+
+    for(int i = 0; i <= 3; i++)
+    {
+        ModelInv2[3][i] = ModelMatrix[3][i];
+        ModelInv2[i][3] = ModelMatrix[i][3];
+    }
+
+    glUniformMatrix4fv(Obj::ModelMID, 1, GL_FALSE, &ModelMatrix[0][0]);
+    glUniformMatrix4fv(Obj::ViewMID, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniformMatrix4fv(Obj::ModelInvMID, 1, GL_FALSE, &ModelInv2[0][0]);
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, Texture);
