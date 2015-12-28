@@ -18,6 +18,7 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
+#include <common/vboindexer.hpp>
 #include "Fish/Tuna.h"
 #include "Fish/Salmon.h"
 #include "Fish/Fawzy.h"
@@ -29,6 +30,14 @@ using namespace glm;
 #include "Environ/Ground.h"
 #include "Background/Stone.h"
 #include "Background/Reef.h"
+
+
+GLuint Obj::ModelMID = 0;
+GLuint Obj::ModelInvMID = 0;
+GLuint Obj::ViewMID = 0;
+GLuint Obj::ProgramID = 0;
+GLuint Obj::vertexNormID = 0;
+
 int main( void )
 {
     // Initialise GLFW
@@ -39,8 +48,8 @@ int main( void )
 		return -1;
 	}
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	// Open a window and create its OpenGL context
     window = glfwCreateWindow( 1024, 768, "Feeding Fawzy", NULL, NULL);
 	if( window == NULL ){
@@ -79,59 +88,71 @@ int main( void )
 	// Get a handle for our buffers
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
+    Obj::vertexNormID = glGetAttribLocation(programID,"vertexNormal_modelspace");
 	// Get a handle for our "myTextureSampler" uniform
     GLuint TextureID  = glGetUniformLocation(programID, "myTextureSampler");
-    Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"Star.bmp","Star.obj");
-    Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
-    Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
 
-    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
-    Obj* stone3 = new Stone(0.5,-8,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone4 = new Stone(-1.3,-7,0,2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone5 = new Stone(-3.5,-7,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone6 = new Stone(-6.5,-6.6,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone7 = new Stone(-6.8,-5.5,0,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
-    Obj* stone8 = new Stone(0,-7,6,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone9 = new Stone(10,-7,10,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone10 = new Stone(6,-7,8,0.7,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone11 = new Stone(-7,-7,9,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone12 = new Stone(13,-7,12,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone13 = new Stone(1,-7,11,0.7,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone14 = new Stone(-7,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone15 = new Stone(10,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* stone16 = new Stone(-13.5,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "shell.bmp", "stone.obj");
-    Obj* plant1 = new Reef(6.5,-7,0,1.6,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefxx.bmp", "reef1.obj");
-    Obj* plant2 = new Reef(6.3,-7.3,1.5,1.8,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefxx.bmp", "reef1.obj");
+    Obj::ProgramID = programID;
+    Obj::ViewMID = glGetUniformLocation(programID, "V");
+    Obj::ModelMID = glGetUniformLocation(programID, "M");
+    Obj::ModelInvMID = glGetUniformLocation(programID, "MInv");
+
+    Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
+    Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID);
+    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
+    Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Star.bmp","Star.obj");
+
+    Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BG2.bmp","BG.obj");
+
+    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
+
+    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
+    Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone2.obj");
+    Obj* stone3 = new Stone(0.5,-8,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone4 = new Stone(-1.3,-7,0,2,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone5 = new Stone(-3.5,-7,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone6 = new Stone(-6.5,-6.6,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone7 = new Stone(-6.8,-5.5,0,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
+    Obj* stone8 = new Stone(0,-7,6,1,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone9 = new Stone(10,-7,10,1,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone10 = new Stone(6,-7,8,0.7,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone11 = new Stone(-7,-7,9,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone12 = new Stone(13,-7,12,1,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone13 = new Stone(1,-7,11,0.7,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone14 = new Stone(-7,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone15 = new Stone(10,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* stone16 = new Stone(-13.5,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
+    Obj* plant1 = new Reef(6.5,-7,0,1.6,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefxx.bmp", "reef1.obj");
+    Obj* plant2 = new Reef(6.3,-7.3,1.5,1.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefxx.bmp", "reef1.obj");
     int plants_size = 12;
     std::vector<Obj*> plants(plants_size);
     float xlimit = 2.0;
     float ylimit = 0;
     float zlimit = 0;
     for (int i = 0; i<4; i++) {
-        plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
+        plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefzz.bmp", "reef1.obj");
         xlimit-=0.75;
         ylimit-=0.5;
     }
         xlimit = -2.5;
     for (int i = 4; i<6; i++) {
-        plants.at(i)=new Reef(xlimit,-7+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reef1.bmp", "reef1.obj");
+        plants.at(i)=new Reef(xlimit,-7+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reef1.bmp", "reef1.obj");
         ylimit+=1;
         xlimit-=0.75;
     }
 
     for(int i=6; i<plants_size; i++) {
-        plants.at(i)=new Reef(xlimit,-6+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reef1.bmp", "reef1.obj");
+        plants.at(i)=new Reef(xlimit,-6+ylimit,-1,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reef1.bmp", "reef1.obj");
         ylimit-=0.25;
         xlimit-=0.75;
     }
+
+    glUseProgram(programID);
+   GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 
 
     do{
@@ -140,16 +161,22 @@ int main( void )
 		// Use our shader
 		glUseProgram(programID);
 
+        glm::vec3 lightPos = glm::vec3(5, 10, -10);
+        glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+
         // Projection matrix : 45 Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
+
         tuna1->draw(ViewMatrix,ProjectionMatrix);
         shark->draw(ViewMatrix,ProjectionMatrix);
         jellyfish->draw(ViewMatrix,ProjectionMatrix);
         jellyfish2->draw(ViewMatrix,ProjectionMatrix);
         star->draw(ViewMatrix,ProjectionMatrix);
+
         ground->draw(ViewMatrix, ProjectionMatrix);
+
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
         stone1->draw(ViewMatrix, ProjectionMatrix);
@@ -173,16 +200,18 @@ int main( void )
         for (int i =0 ;i<plants_size; i++) {
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
+
         fawzy->draw(ViewMatrix,ProjectionMatrix);
         salmon->draw(ViewMatrix,ProjectionMatrix);
-        /*
+
 
         plant2->draw(ViewMatrix,ProjectionMatrix);
-        plant3->draw(ViewMatrix,ProjectionMatrix);
-        plant4->draw(ViewMatrix,ProjectionMatrix);
-        */
+        //plant3->draw(ViewMatrix,ProjectionMatrix);
+      //  plant4->draw(ViewMatrix,ProjectionMatrix);
+
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
+        glDisableVertexAttribArray(Obj::vertexNormID);
 
 		// Swap buffers
 		glfwSwapBuffers(window);

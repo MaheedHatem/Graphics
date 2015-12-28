@@ -20,9 +20,9 @@ using namespace glm;
 #include <common/controls.hpp>
 #include <common/objloader.hpp>
 Shark::Shark(float x , float y , float z , float s , GLuint TextureID,
-           GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID)
-    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID,MatrixID){
-    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"shark.bmp","Shark.obj");
+           GLuint vertexUVID,GLuint vertexPosition_modelspaceID, GLuint MatrixID)
+    :Obj(x , y , z, s , TextureID ,vertexUVID,vertexPosition_modelspaceID, MatrixID){
+    body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"shark.bmp","Shark.obj");
     shearvalue = 0;
     inc = true;
 }

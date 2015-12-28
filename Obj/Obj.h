@@ -10,18 +10,27 @@ protected:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec3> normals;
+
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normbuffer;
     GLuint Texture;
     //IDs from main
-    GLuint TextureID ,vertexUVID , vertexPosition_modelspaceID , MatrixID;
+    GLuint TextureID ,vertexUVID , vertexPosition_modelspaceID, MatrixID;
 public:
+    static GLuint ProgramID;
+    static GLuint ViewMID;
+    static GLuint ModelMID;
+    static GLuint ModelInvMID;
+    static GLuint vertexNormID;
     Obj(float x , float y , float z , float s, GLuint TextureID,
-         GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
+         GLuint vertexUVID,GLuint vertexPosition_modelspaceID, GLuint MatrixID);
     void setTranslation(float x, float y, float z);
     void setScaling(float s);
     virtual void draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix) = 0;
     ~Obj();
 };
+
 #endif
+
+
