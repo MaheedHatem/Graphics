@@ -114,7 +114,10 @@ int main( void )
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
     // Cull triangles which normal is not towards the camera
-    glEnable(GL_CULL_FACE);;
+    glEnable(GL_CULL_FACE);
+
+
+    //glEnable(GL_NORMALIZE);
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
     // Get a handle for our "MVP" uniform
@@ -134,7 +137,7 @@ int main( void )
 
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID);
+    Obj* shark = new Shark(10,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID);
     Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Star.bmp","Star.obj");
@@ -208,7 +211,7 @@ int main( void )
         // Projection matrix : 45 Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
+        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0 ,0, -10),glm::vec3(0,0,0),glm::vec3(0,1,0));
 
         //Moving Fawzy
         if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS) {
@@ -259,6 +262,7 @@ int main( void )
         stone16->draw(ViewMatrix,ProjectionMatrix);
         plant1->draw(ViewMatrix,ProjectionMatrix);
         plant2->draw(ViewMatrix,ProjectionMatrix);
+        shark->draw(ViewMatrix,ProjectionMatrix);
         for (int i =0 ;i<plants_size; i++) {
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
@@ -276,8 +280,10 @@ int main( void )
         lastFrameTime2 = currentTime;
         if ( currentTime - lastTime2 >= 0.1 ){
             lastTime2 += 0.1;
-            for(int i=0; i<Fish.size(); i++)
+            for(int i=0; i<Fish.size(); i++){
                 Fish.at(i)->updateTranslation();
+                shark->updateTranslation();
+            }
         }
 
         for (int i=0; i<Fish.size(); i++){

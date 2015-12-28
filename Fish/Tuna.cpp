@@ -74,8 +74,8 @@ void Tuna::updateTranslation(){
     eyes->updateTranslation();
 }
 void Tuna::invert(bool z){
-    body->invert(false);
-    mouth->invert(false);
-    eyes->invert(false);
+    body->invert(true);
+    mouth->invert(true);
+    eyes->invert(true);
     ScalingMatrix[0].x = -ScalingMatrix[0].x;
 }
