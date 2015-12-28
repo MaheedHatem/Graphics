@@ -38,7 +38,7 @@ Reef::Reef(float x , float y , float z , float s , GLuint TextureID,
     inc = true;
 }
 
-void Reef::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Reef::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
@@ -91,6 +91,8 @@ void Reef::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return true;
 }
 void Reef::updateShear(){
     if(inc){

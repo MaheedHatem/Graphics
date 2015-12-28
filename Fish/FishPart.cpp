@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <time.h>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -13,7 +14,6 @@
 #include "FishPart.h"
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
-
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -34,9 +34,34 @@ glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC
 
 glGenBuffers(1, &normbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normbuffer);
+
 glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+
+this->x = x;
+this->y = y;
+this->z = z;
+srand(time(NULL));
+    if(x <= -8){
+        dx = (rand()%35 + 5) * 0.01;
+
+    }
+    else if (x >= 8){
+        dx = -(rand()%35 + 5) * 0.01;
+    }
+    else{
+        dx = 0;
+    }
 }
-void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+void FishPart::setTranslation(float x, float y, float z){
+    Obj::setTranslation(x , y , z);
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+bool FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+    x += dx;
+    this->setTranslation(x,y,z);   //translates object with dx every time it is called
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -65,10 +90,11 @@ void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glUniformMatrix4fv(Obj::ViewMID, 1, GL_FALSE, &ViewMatrix[0][0]);
     glUniformMatrix4fv(Obj::ModelInvMID, 1, GL_FALSE, &ModelInv2[0][0]);
 
+
     // Bind our texture in Texture Unit 0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, Texture);
- //    Set our "myTextureSampler" sampler to user Texture Unit 0
+    //Set our "myTextureSampler" sampler to user Texture Unit 0
     glUniform1i(TextureID, 0);
 
     // 1rst attribute buffer : vertices
@@ -91,7 +117,15 @@ void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return(!((dx>0 && x>=8) || (dx<0 && x<=-8)));
 }
 void FishPart::setShear(float s){
     ShearMatrix[2].x = s;
+}
+void FishPart::invert(bool z){
+    ScalingMatrix[0].x = - ScalingMatrix[0].x;
+    if(z){
+      ScalingMatrix[2].z = - ScalingMatrix[2].z;
+    }
 }

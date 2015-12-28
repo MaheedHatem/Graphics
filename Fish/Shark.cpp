@@ -25,6 +25,10 @@ Shark::Shark(float x , float y , float z , float s , GLuint TextureID,
     body = new FishPart(x,y,z,s,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"shark.bmp","Shark.obj");
     shearvalue = 0;
     inc = true;
+    if(x>= 8){
+        this->invert(false);
+
+    }
 }
 void Shark::setScaling(float s){
     Obj::setScaling(s);
@@ -35,9 +39,9 @@ void Shark::setTranslation(float x, float y, float z){
     body->setTranslation(x,y,z);
 }
 
-void Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
-    body->draw(ViewMatrix , ProjectionMatrix);
+    return(body->draw(ViewMatrix , ProjectionMatrix));
 }
 void Shark::updateShear(){
     if(inc){
@@ -54,4 +58,8 @@ void Shark::updateShear(){
     }
     ShearMatrix[2].x = shearvalue;
     body->setShear(shearvalue);
+}
+void Shark::invert(bool z){
+    body->invert(true);
+ScalingMatrix[0].x = - ScalingMatrix[0].x;
 }

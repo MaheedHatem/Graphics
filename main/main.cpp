@@ -1,7 +1,12 @@
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
 #include <vector>
+#include <iostream>
+#include <time.h>
+#include <unistd.h>
+using namespace std;
 
 // Include GLEW
 #include <GL/glew.h>
@@ -32,16 +37,45 @@ using namespace glm;
 #include "Background/Reef.h"
 
 
+
 GLuint Obj::ModelMID = 0;
 GLuint Obj::ModelInvMID = 0;
 GLuint Obj::ViewMID = 0;
 GLuint Obj::ProgramID = 0;
 GLuint Obj::vertexNormID = 0;
+GLuint TextureID;
+GLuint vertexUVID;
+GLuint vertexPosition_modelspaceID;
+GLuint MatrixID;
+
+int RandomSign() {
+    /* initialize random seed: */
+    int sign = (rand()%2) - 1;
+    if (sign == 0) sign = 1;
+    return sign;
+}
+
+Tuna* GenerateTunaFish() {
+    int signX = RandomSign();
+    int signY = RandomSign();
+    float x = signX* ((rand()%12) + 8); // *8
+    float y = signY* ((rand()%300)*0.01); // rand()%6
+    return new Tuna(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+}
+Salmon* GenerateSalmonFish() {
+    int signX = RandomSign();
+    int signY = RandomSign();
+    float x = signX* ((rand()%12) + 8);
+    float y = signY* ((rand()%300)*0.01);
+    return new Salmon(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+}
+
 
 int main( void )
 {
     // Initialise GLFW
-	if( !glfwInit() )
+    srand (time(NULL));
+    if( !glfwInit() )
 	{
 		fprintf( stderr, "Failed to initialize GLFW\n" );
 		getchar();
@@ -80,12 +114,13 @@ int main( void )
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS); 
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);;
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 	// Get a handle for our "MVP" uniform
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    MatrixID = glGetUniformLocation(programID, "MVP");
 	// Get a handle for our buffers
+
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
 	GLuint vertexUVID = glGetAttribLocation(programID, "vertexUV");
     Obj::vertexNormID = glGetAttribLocation(programID,"vertexNormal_modelspace");
@@ -106,7 +141,7 @@ int main( void )
 
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BG2.bmp","BG.obj");
 
-    Obj* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
+    Fawzy* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
 
     Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
@@ -128,6 +163,10 @@ int main( void )
     Obj* stone16 = new Stone(-13.5,-7,15,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "shell.bmp", "stone.obj");
     Obj* plant1 = new Reef(6.5,-7,0,1.6,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefxx.bmp", "reef1.obj");
     Obj* plant2 = new Reef(6.3,-7.3,1.5,1.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefxx.bmp", "reef1.obj");
+
+    std::vector<Obj*> Fish;
+
+
     int plants_size = 12;
     std::vector<Obj*> plants(plants_size);
     float xlimit = 2.0;
@@ -151,11 +190,14 @@ int main( void )
         xlimit-=0.75;
     }
 
+
     glUseProgram(programID);
    GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 
 
+
     do{
+
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Use our shader
@@ -169,11 +211,31 @@ int main( void )
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
 
-        tuna1->draw(ViewMatrix,ProjectionMatrix);
-        shark->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish->draw(ViewMatrix,ProjectionMatrix);
-        jellyfish2->draw(ViewMatrix,ProjectionMatrix);
-        star->draw(ViewMatrix,ProjectionMatrix);
+        //Moving Fawzy
+        if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS )
+        {
+            fawzy->movehoriz(false);
+        }
+        else if (glfwGetKey(window,  GLFW_KEY_RIGHT) ==GLFW_PRESS )
+        {
+            fawzy->movehoriz(true);
+        }
+        if (glfwGetKey(window,  GLFW_KEY_UP) ==GLFW_PRESS )
+        {
+            fawzy->movevertic(true);
+        }
+        else if (glfwGetKey(window,  GLFW_KEY_DOWN) ==GLFW_PRESS )
+        {
+            fawzy->movevertic(false);
+        }
+        if (Fish.size() <15) {
+            int random = rand()%2;
+            if (random == 1)
+             Fish.push_back(GenerateTunaFish());
+            else
+            Fish.push_back(GenerateSalmonFish());
+        }
+
 
         ground->draw(ViewMatrix, ProjectionMatrix);
 
@@ -201,13 +263,16 @@ int main( void )
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
 
+
+
+
+        for (int i=0; i<Fish.size(); i++){
+            if(!(Fish.at(i))->draw(ViewMatrix,ProjectionMatrix)){
+                Fish.erase(Fish.begin()+i);
+            }
+        }
+
         fawzy->draw(ViewMatrix,ProjectionMatrix);
-        salmon->draw(ViewMatrix,ProjectionMatrix);
-
-
-        plant2->draw(ViewMatrix,ProjectionMatrix);
-        //plant3->draw(ViewMatrix,ProjectionMatrix);
-      //  plant4->draw(ViewMatrix,ProjectionMatrix);
 
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
 		glDisableVertexAttribArray(vertexUVID);
