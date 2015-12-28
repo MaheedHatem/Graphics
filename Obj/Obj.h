@@ -24,6 +24,8 @@ public:
          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
     virtual void setTranslation(float x, float y, float z);
     virtual void setScaling(float s);
+    virtual void updateShear();
+    virtual void updateTranslation();
     virtual void invert(bool z);
     virtual bool draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix) = 0;
     ~Obj();

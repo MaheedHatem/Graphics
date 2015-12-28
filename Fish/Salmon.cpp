@@ -45,17 +45,16 @@ void Salmon::setTranslation(float x, float y, float z){
 }
 
 bool Salmon::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
-    updateShear();
     body->draw(ViewMatrix , ProjectionMatrix);
     eyes->draw(ViewMatrix , ProjectionMatrix);
     return(mouth->draw(ViewMatrix , ProjectionMatrix));
 }
 void Salmon::updateShear(){
     if(inc){
-        shearvalue+=0.05;
+        shearvalue+=0.3;
     }
     else{
-        shearvalue-=0.05;
+        shearvalue-=0.3;
     }
     if(shearvalue >= 1.0f){
         inc = false;
@@ -67,6 +66,11 @@ void Salmon::updateShear(){
     body->setShear(shearvalue);
     mouth->setShear(shearvalue);
     eyes->setShear(shearvalue);
+}
+void Salmon::updateTranslation(){
+    body->updateTranslation();
+    mouth->updateTranslation();
+    eyes->updateTranslation();
 }
 void Salmon::invert(bool z){
     body->invert(false);

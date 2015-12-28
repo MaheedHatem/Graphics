@@ -49,4 +49,5 @@ Obj::~Obj(){
     glDeleteBuffers(1, &uvbuffer);
     glDeleteBuffers(1, &normbuffer);
 }
-
+void Obj:: updateShear() {}
+void Obj:: updateTranslation() {}

@@ -50,14 +50,14 @@ int RandomSign() {
 Tuna* GenerateTunaFish() {
     int signX = RandomSign();
     int signY = RandomSign();
-    float x = signX* ((rand()%12) + 8); // *8
+    float x = signX* ((rand()%2) + 8); // *8
     float y = signY* ((rand()%300)*0.01); // rand()%6
     return new Tuna(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 Salmon* GenerateSalmonFish() {
     int signX = RandomSign();
     int signY = RandomSign();
-    float x = signX* ((rand()%12) + 8);
+    float x = signX* ((rand()%2) + 8);
     float y = signY* ((rand()%300)*0.01);
     return new Salmon(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
@@ -121,7 +121,7 @@ int main( void )
 
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"BG2.bmp","BG.obj");
-    Fawzy* fawzy = new Fawzy(-3,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
+    Fawzy* fawzy = new Fawzy(-3,0,-1,0.5,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "stone.bmp", "stone2.obj");
@@ -147,7 +147,7 @@ int main( void )
     float ylimit = 0;
     float zlimit = 0;
     for (int i = 0; i<4; i++) {
-        plants.at(i)=new Reef(xlimit,-6+ylimit,zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
+        plants.at(i)=new Reef(xlimit,-6+ylimit,-1.5+zlimit,1,TextureID, vertexUVID, vertexPosition_modelspaceID,MatrixID, "reefzz.bmp", "reef1.obj");
         xlimit-=0.75;
         ylimit-=0.5;
     }
@@ -163,7 +163,12 @@ int main( void )
         ylimit-=0.25;
         xlimit-=0.75;
     }
-
+    double lastTime1 = glfwGetTime(); //for shearing
+    double lastTime2 = glfwGetTime(); //for translation
+    double lastTime3 = glfwGetTime(); //for generation
+    double lastFrameTime1 = lastTime1;
+    double lastFrameTime2 = lastTime2;
+    double lastFrameTime3 = lastTime3;
     do{
 
 		// Clear the screen
@@ -176,30 +181,31 @@ int main( void )
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
         //Moving Fawzy
-        if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS )
-        {
+        if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS) {
             fawzy->movehoriz(false);
         }
-        else if (glfwGetKey(window,  GLFW_KEY_RIGHT) ==GLFW_PRESS )
-        {
+        else if (glfwGetKey(window,  GLFW_KEY_RIGHT) ==GLFW_PRESS) {
             fawzy->movehoriz(true);
         }
-        if (glfwGetKey(window,  GLFW_KEY_UP) ==GLFW_PRESS )
-        {
+        if (glfwGetKey(window,  GLFW_KEY_UP) ==GLFW_PRESS) {
             fawzy->movevertic(true);
         }
-        else if (glfwGetKey(window,  GLFW_KEY_DOWN) ==GLFW_PRESS )
-        {
+        else if (glfwGetKey(window,  GLFW_KEY_DOWN) ==GLFW_PRESS) {
             fawzy->movevertic(false);
         }
-        if (Fish.size() <15) {
-            int random = rand()%2;
-            if (random == 1)
-             Fish.push_back(GenerateTunaFish());
-            else
-            Fish.push_back(GenerateSalmonFish());
-        }
 
+        double currentTime = glfwGetTime();
+        lastFrameTime3 = currentTime;
+        if ( currentTime - lastTime3 >= 1 ){
+            lastTime3 += 1;
+            if (Fish.size()<15) {
+                int random = rand()%2;
+                if (random == 1)
+                 Fish.push_back(GenerateTunaFish());
+                else
+                 Fish.push_back(GenerateSalmonFish());
+            }
+        }
         ground->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
@@ -225,9 +231,27 @@ int main( void )
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
 
+        currentTime = glfwGetTime();
+        lastFrameTime1 = currentTime;
+        if ( currentTime - lastTime1 >= 0.001 ){
+            lastTime1 += 0.001;
+            fawzy->updateShear();
+            for(int i=0; i<Fish.size(); i++)
+                Fish.at(i)->updateShear();
+        }
+
+        currentTime = glfwGetTime();
+        lastFrameTime2 = currentTime;
+        if ( currentTime - lastTime2 >= 0.1 ){
+            lastTime2 += 0.1;
+            for(int i=0; i<Fish.size(); i++)
+                Fish.at(i)->updateTranslation();
+        }
+
         for (int i=0; i<Fish.size(); i++){
             if(!(Fish.at(i))->draw(ViewMatrix,ProjectionMatrix)){
                 Fish.erase(Fish.begin()+i);
+                i--;
             }
         }
 

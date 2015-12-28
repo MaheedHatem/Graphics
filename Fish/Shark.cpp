@@ -40,15 +40,15 @@ void Shark::setTranslation(float x, float y, float z){
 }
 
 bool Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
-    updateShear();
+    //updateShear();
     return(body->draw(ViewMatrix , ProjectionMatrix));
 }
 void Shark::updateShear(){
     if(inc){
-        shearvalue+=0.05;
+        shearvalue+=0.3;
     }
     else{
-        shearvalue-=0.05;
+        shearvalue-=0.3;
     }
     if(shearvalue >= 1.0f){
         inc = false;
@@ -62,4 +62,7 @@ void Shark::updateShear(){
 void Shark::invert(bool z){
     body->invert(true);
 ScalingMatrix[0].x = - ScalingMatrix[0].x;
+}
+void Shark::updateTranslation(){
+    body->updateTranslation();
 }

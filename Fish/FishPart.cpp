@@ -56,9 +56,11 @@ void FishPart::setTranslation(float x, float y, float z){
     this->y = y;
     this->z = z;
 }
+void FishPart::updateTranslation() {
+    x+= dx;
+}
 
 bool FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
-    x += dx;
     this->setTranslation(x,y,z);   //translates object with dx every time it is called
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
