@@ -35,8 +35,7 @@ using namespace glm;
 #include "Environ/Ground.h"
 #include "Background/Stone.h"
 #include "Background/Reef.h"
-
-
+#include "common/text2D.hpp"
 
 GLuint Obj::ModelMID = 0;
 GLuint Obj::ModelInvMID = 0;
@@ -142,6 +141,8 @@ int main( void )
     Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Star.bmp","Star.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BG2.bmp","BG.obj");
+  //  Obj* ceil = new Ground(0,10,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"water.bmp","Ceil.obj");
+    Obj* bgcont = new Ground(0,20,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BGcont.bmp","BGcont.obj");
     Fawzy* fawzy = new Fawzy(-3,0,-1,0.5,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
     Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
@@ -197,7 +198,7 @@ int main( void )
 
     glUseProgram(programID);
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-
+    initText2D( "Holstein.DDS" );
     do{
 
         // Clear the screen
@@ -205,7 +206,7 @@ int main( void )
         // Use our shader
         glUseProgram(programID);
 
-        glm::vec3 lightPos = glm::vec3(5, 10, -10);
+        glm::vec3 lightPos = glm::vec3(0, 8, -15);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 
         // Projection matrix : 45 Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
@@ -239,9 +240,9 @@ int main( void )
                  Fish.push_back(GenerateSalmonFish());
             }
         }
-
+  //      ceil->draw(ViewMatrix, ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
-
+        bgcont->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
         stone1->draw(ViewMatrix, ProjectionMatrix);
@@ -298,7 +299,9 @@ int main( void )
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
         glDisableVertexAttribArray(vertexUVID);
         glDisableVertexAttribArray(Obj::vertexNormID);
-
+        char text[256];
+        sprintf(text,"%.2f sec", glfwGetTime() );
+        printText2D(text, 10, 500, 60);
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
