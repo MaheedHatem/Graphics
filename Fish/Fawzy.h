@@ -24,6 +24,6 @@ public:
     void invert(bool z);
     void movehoriz(bool r);
     void movevertic(bool u);
-    void draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
+    bool draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
 };
 #endif

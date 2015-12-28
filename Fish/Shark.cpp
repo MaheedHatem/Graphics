@@ -39,9 +39,9 @@ void Shark::setTranslation(float x, float y, float z){
     body->setTranslation(x,y,z);
 }
 
-void Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
-    body->draw(ViewMatrix , ProjectionMatrix);
+    return(body->draw(ViewMatrix , ProjectionMatrix));
 }
 void Shark::updateShear(){
     if(inc){

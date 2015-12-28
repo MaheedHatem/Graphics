@@ -57,7 +57,7 @@ void FishPart::setTranslation(float x, float y, float z){
     this->z = z;
 }
 
-void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     x += dx;
     this->setTranslation(x,y,z);   //translates object with dx every time it is called
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
@@ -83,6 +83,8 @@ void FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return(!((dx>0 && x>=8) || (dx<0 && x<=-8)));
 }
 void FishPart::setShear(float s){
     ShearMatrix[2].x = s;

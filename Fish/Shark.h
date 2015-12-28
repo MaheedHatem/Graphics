@@ -16,6 +16,6 @@ public:
     void setTranslation(float x, float y, float z);
     void setScaling(float s);
     void invert(bool z);
-    void draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
+    bool draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
 };
 #endif

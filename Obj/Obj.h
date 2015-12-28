@@ -25,7 +25,7 @@ public:
     virtual void setTranslation(float x, float y, float z);
     virtual void setScaling(float s);
     virtual void invert(bool z);
-    virtual void draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix) = 0;
+    virtual bool draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix) = 0;
     ~Obj();
 };
 #endif

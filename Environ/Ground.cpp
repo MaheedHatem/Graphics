@@ -37,7 +37,7 @@ glGenBuffers(1, &normbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normbuffer);
 glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec2), &normals[0], GL_STATIC_DRAW);
 }
-void Ground::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Ground::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
@@ -64,6 +64,7 @@ void Ground::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 //    glBindTexture(GL_TEXTURE_2D, 0);
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    return true;
 }
 
 

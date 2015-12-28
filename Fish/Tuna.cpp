@@ -44,11 +44,11 @@ void Tuna::setTranslation(float x, float y, float z){
     mouth->setTranslation(x,y,z);
 }
 
-void Tuna::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Tuna::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
     body->draw(ViewMatrix , ProjectionMatrix);
     eyes->draw(ViewMatrix , ProjectionMatrix);
-    mouth->draw(ViewMatrix , ProjectionMatrix);
+    return(mouth->draw(ViewMatrix , ProjectionMatrix));
 }
 void Tuna::updateShear(){
     if(inc){

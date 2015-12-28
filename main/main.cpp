@@ -43,9 +43,7 @@ GLuint MatrixID;
 int RandomSign() {
     /* initialize random seed: */
     int sign = (rand()%2) - 1;
-    std::cout <<sign<<std::endl;
     if (sign == 0) sign = 1;
-    std::cout <<sign<<std::endl;
     return sign;
 }
 
@@ -227,8 +225,11 @@ int main( void )
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
 
-        for (int i=0; i<Fish.size(); i++)
-            (Fish.at(i))->draw(ViewMatrix,ProjectionMatrix);
+        for (int i=0; i<Fish.size(); i++){
+            if(!(Fish.at(i))->draw(ViewMatrix,ProjectionMatrix)){
+                Fish.erase(Fish.begin()+i);
+            }
+        }
 
         fawzy->draw(ViewMatrix,ProjectionMatrix);
 

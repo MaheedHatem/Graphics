@@ -41,7 +41,7 @@ void Fawzy::setTranslation(float x, float y, float z){
     body->setTranslation(x,y,z);
 }
 
-void Fawzy::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Fawzy::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
     x+=dx;
     y+=dy;
@@ -49,6 +49,8 @@ void Fawzy::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     body->draw(ViewMatrix , ProjectionMatrix);
     dx = 0;
     dy = 0;
+
+    return true;
 }
 void Fawzy::movehoriz(bool r){
     if(r){

@@ -36,7 +36,7 @@ glGenBuffers(1, &normbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normbuffer);
 glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec2), &normals[0], GL_STATIC_DRAW);
 }
-void Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
+bool Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
@@ -62,6 +62,8 @@ void Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() );
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    return true;
 }
 void Jellyfish::setShear(float s){
     ShearMatrix[2].x = s;
