@@ -66,6 +66,8 @@ add_executable(main
 	common/texture.hpp
 	common/objloader.cpp
 	common/objloader.hpp
+	common/text2D.cpp
+	common/text2D.hpp
 	Obj/Obj.cpp
 	Obj/Obj.h
 	Fish/Tuna.cpp

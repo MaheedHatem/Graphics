@@ -35,8 +35,7 @@ using namespace glm;
 #include "Environ/Ground.h"
 #include "Background/Stone.h"
 #include "Background/Reef.h"
-
-
+#include "common/text2D.hpp"
 
 GLuint Obj::ModelMID = 0;
 GLuint Obj::ModelInvMID = 0;
@@ -121,7 +120,10 @@ int main( void )
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
     // Cull triangles which normal is not towards the camera
-    glEnable(GL_CULL_FACE);;
+    glEnable(GL_CULL_FACE);
+
+
+    //glEnable(GL_NORMALIZE);
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
     // Get a handle for our "MVP" uniform
@@ -140,14 +142,13 @@ int main( void )
     Obj::ModelInvMID = glGetUniformLocation(programID, "MInv");
 
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
-    Obj* tuna1 = new Tuna(0,0,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* shark = new Shark(3,0,0,2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID);
     Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Star.bmp","Star.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BG2.bmp","BG.obj");
+  //  Obj* ceil = new Ground(0,10,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"water.bmp","Ceil.obj");
+    Obj* bgcont = new Ground(0,20,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BGcont.bmp","BGcont.obj");
     Fawzy* fawzy = new Fawzy(-3,0,-1,0.5,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID);
-    Obj* salmon = new Salmon(0,-2,0,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID);
     Obj* stone0 = new Stone(6.5,-7,2,3, TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
     Obj* stone1 = new Stone(5,-7.5,2,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone.obj");
     Obj* stone2 = new Stone(4,-7.5,1,3,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "stone.bmp", "stone2.obj");
@@ -203,7 +204,8 @@ int main( void )
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
     int FishCounter = 0;
     int currentLevel = 1;
-       int counter1=0, counter2=0;
+    int counter1=0, counter2=0;
+    initText2D( "Holstein.DDS" );
     do{
 
         // Clear the screen
@@ -211,13 +213,13 @@ int main( void )
         // Use our shader
         glUseProgram(programID);
 
-        glm::vec3 lightPos = glm::vec3(5, 10, -10);
+        glm::vec3 lightPos = glm::vec3(0, 8, -15);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 
         // Projection matrix : 45 Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0,0,-10),glm::vec3(0,0,0),glm::vec3(0,1,0));
+        glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0 ,0, -10),glm::vec3(0,0,0),glm::vec3(0,1,0));
 
         //Moving Fawzy
         if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS) {
@@ -277,9 +279,9 @@ int main( void )
             }
         }
 
-
+        //ceil->draw(ViewMatrix, ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
-
+        bgcont->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
         stone0->draw(ViewMatrix, ProjectionMatrix);
         stone1->draw(ViewMatrix, ProjectionMatrix);
@@ -300,6 +302,7 @@ int main( void )
         stone16->draw(ViewMatrix,ProjectionMatrix);
         plant1->draw(ViewMatrix,ProjectionMatrix);
         plant2->draw(ViewMatrix,ProjectionMatrix);
+
         for (int i =0 ;i<plants_size; i++) {
             plants[i]->draw(ViewMatrix,ProjectionMatrix);
         }
@@ -362,7 +365,9 @@ int main( void )
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
         glDisableVertexAttribArray(vertexUVID);
         glDisableVertexAttribArray(Obj::vertexNormID);
-
+        char text[256];
+        sprintf(text,"%.2f sec", glfwGetTime() );
+        printText2D(text, 10, 400, 60);
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();

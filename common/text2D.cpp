@@ -17,13 +17,13 @@ unsigned int Text2DVertexBufferID;         // Buffer containing the vertices
 unsigned int Text2DUVBufferID;             //                       UVs
 unsigned int Text2DShaderID;               // Program used to disaply the text
 unsigned int vertexPosition_screenspaceID; // Location of the program's "vertexPosition_screenspace" attribute
-unsigned int vertexUVID;                   // Location of the program's "vertexUV" attribute
+unsigned int vertexUVID2;                   // Location of the program's "vertexUV" attribute
 unsigned int Text2DUniformID;              // Location of the program's texture attribute
 
 void initText2D(const char * texturePath){
 
 	// Initialize texture
-	Text2DTextureID = loadDDS(texturePath);
+    Text2DTextureID = loadDDS(texturePath);
 
 	// Initialize VBO
 	glGenBuffers(1, &Text2DVertexBufferID);
@@ -34,7 +34,7 @@ void initText2D(const char * texturePath){
 
 	// Get a handle for our buffers
 	vertexPosition_screenspaceID = glGetAttribLocation(Text2DShaderID, "vertexPosition_screenspace");
-	vertexUVID = glGetAttribLocation(Text2DShaderID, "vertexUV");
+    vertexUVID2 = glGetAttribLocation(Text2DShaderID, "vertexUV");
 
 	// Initialize uniforms' IDs
 	Text2DUniformID = glGetUniformLocation( Text2DShaderID, "myTextureSampler" );
@@ -99,9 +99,9 @@ void printText2D(const char * text, int x, int y, int size){
 	glVertexAttribPointer(vertexPosition_screenspaceID, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
 	// 2nd attribute buffer : UVs
-	glEnableVertexAttribArray(vertexUVID);
+    glEnableVertexAttribArray(vertexUVID2);
 	glBindBuffer(GL_ARRAY_BUFFER, Text2DUVBufferID);
-	glVertexAttribPointer(vertexUVID, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
+    glVertexAttribPointer(vertexUVID2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -112,7 +112,7 @@ void printText2D(const char * text, int x, int y, int size){
 	glDisable(GL_BLEND);
 
 	glDisableVertexAttribArray(vertexPosition_screenspaceID);
-	glDisableVertexAttribArray(vertexUVID);
+    glDisableVertexAttribArray(vertexUVID2);
 
 }
 

@@ -104,7 +104,7 @@ void Fawzy::updateShear(){
     body->setShear(shearvalue);
 }
 void Fawzy::invert(bool z){
-    body->invert(false);
+    body->invert(true);
     ScalingMatrix[0].x = - ScalingMatrix[0].x;
 
     float temp = xmin;
