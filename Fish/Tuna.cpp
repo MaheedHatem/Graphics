@@ -30,10 +30,8 @@ Tuna::Tuna(float x , float y , float z , float s , GLuint TextureID,
     if(x>= 8){
         this->invert(false);
     }
-    xmin = 0.46;
-    xmax = -0.8;
-    ymin = 0.2592;
-    ymax = -0.27;
+    typeNumber = 1;
+
 }
 void Tuna::setScaling(float s){
     Obj::setScaling(s);
@@ -56,10 +54,10 @@ bool Tuna::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 }
 void Tuna::updateShear(){
     if(inc){
-        shearvalue+=0.3;
+        shearvalue+=0.01;
     }
     else{
-        shearvalue-=0.3;
+        shearvalue-=0.01;
     }
     if(shearvalue >= 1.0f){
         inc = false;
@@ -85,9 +83,6 @@ void Tuna::invert(bool z){
     eyes->invert(true);
     ScalingMatrix[0].x = -ScalingMatrix[0].x;
     float temp = xmin;
-    xmin = ymax;
+    xmin = xmax;
     xmax = temp;
-    temp = ymin;
-    ymin = ymax;
-    ymax = temp;
 }

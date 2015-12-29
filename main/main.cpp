@@ -205,6 +205,7 @@ int main( void )
     int FishCounter = 0;
     int currentLevel = 1;
     int counter1=0, counter2=0;
+    int lives = 3;
     initText2D( "Holstein.DDS" );
     do{
 
@@ -309,8 +310,8 @@ int main( void )
 
         currentTime = glfwGetTime();
         lastFrameTime1 = currentTime;
-        if ( currentTime - lastTime1 >= 0.001 ){
-            lastTime1 += 0.001;
+        if ( currentTime - lastTime1 >= 0.01 ){
+            lastTime1 += 0.01;
             fawzy->updateShear();
             for(int i=0; i<Fish.size(); i++)
                 Fish.at(i)->updateShear();
@@ -331,32 +332,40 @@ int main( void )
                 i--;
             }
         }
+
         //Collision Detection
         for (int i=0; i<Fish.size(); i++) {
-            float fawzyMouthPositionX = fawzy->x; // round(fawzy->x + fawzy->xMouthPosition);
-            float fawzyMouthPositionY = fawzy->y; // + fawzy->yMouthPosition);
-            if (Fish.at(i)->s >1) {
-                Fish.at(i)->xmin*= Fish.at(i)->s;
-                Fish.at(i)->xmax*= Fish.at(i)->s;
-                Fish.at(i)->ymin*= Fish.at(i)->s;
-                Fish.at(i)->ymax*= Fish.at(i)->s;
-            }
-            float xmin = Fish.at(i)->x - Fish.at(i)->xmin;
-            float xmax = Fish.at(i)->x - Fish.at(i)->xmax;
-            float ymin = Fish.at(i)->y - Fish.at(i)->ymin;
-            float ymax = Fish.at(i)->y - Fish.at(i)->ymax;
+            float fawzyMouthPositionX = fawzy->x;
+            float fawzyMouthPositionY = fawzy->y;
+            float xmin, xmax, ymin, ymax;
+            xmin = Fish.at(i)->x-0.8*fawzy->s;
+            xmax = Fish.at(i)->x+0.8*fawzy->s;
+            ymin = Fish.at(i)->y-1.2*fawzy->s;
+            ymax = Fish.at(i)->y+1*fawzy->s;
+
             if(fawzyMouthPositionX < xmax && fawzyMouthPositionX > xmin
                     && fawzyMouthPositionY < ymax && fawzyMouthPositionY > ymin) {
+                if (currentLevel==1 && Fish.at(i)->typeNumber > 1) {
+                    lives--;
+                    currentLevel = 1;
+                    FishCounter=-1;
+                }
+                else if (currentLevel==2 && Fish.at(i)->typeNumber > 2) {
+                    lives--;
+                    currentLevel = 1;
+                    fawzy->setScaling(0.5);
+                    FishCounter=-1;
+                }
                 Fish.erase(Fish.begin()+i);
                 FishCounter++;
                 i--;
             }
         }
-        if (FishCounter == 10 && currentLevel == 1) {
+        if (FishCounter == 5 && currentLevel == 1) {
             currentLevel++;
             fawzy->setScaling(0.8);
         }
-        else if(FishCounter == 20 && currentLevel == 2) {
+        else if(FishCounter == 10 && currentLevel == 2) {
             currentLevel++;
             fawzy->setScaling(1.1);
         }
@@ -374,7 +383,7 @@ int main( void )
 
     } // Check if the ESC key was pressed or the window was closed
     while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-           glfwWindowShouldClose(window) == 0 );
+           glfwWindowShouldClose(window) == 0 && lives > 0 );
 
     glDeleteProgram(programID);
     glDeleteTextures(1, &TextureID);

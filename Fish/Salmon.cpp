@@ -30,10 +30,7 @@ Salmon::Salmon(float x , float y , float z , float s , GLuint TextureID,
     if(x>= 8){
         this->invert(false);
     }
-    xmin = 0.47;
-    xmax = -0.95;
-    ymin = 0.284;
-    ymax = -0.3;
+    typeNumber = 2;
 }
 void Salmon::setScaling(float s){
     Obj::setScaling(s);
@@ -55,10 +52,10 @@ bool Salmon::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 }
 void Salmon::updateShear(){
     if(inc){
-        shearvalue+=0.3;
+        shearvalue+=0.01;
     }
     else{
-        shearvalue-=0.3;
+        shearvalue-=0.01;
     }
     if(shearvalue >= 1.0f){
         inc = false;
@@ -84,9 +81,7 @@ void Salmon::invert(bool z){
     eyes->invert(true);
     ScalingMatrix[0].x = - ScalingMatrix[0].x;
     float temp = xmin;
-    xmin = ymax;
+    xmin = xmax;
     xmax = temp;
-    temp = ymin;
-    ymin = ymax;
-    ymax = temp;
+
 }

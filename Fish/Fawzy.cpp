@@ -57,7 +57,7 @@ bool Fawzy::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 void Fawzy::movehoriz(bool r){
     if(r){
         if(x>-6.5){
-             dx = -0.3;
+             dx = -0.01;
         }
         if(!right){
             this->invert(false);
@@ -66,7 +66,7 @@ void Fawzy::movehoriz(bool r){
     }
     else{
         if(x < 6.5){
-            dx = 0.3;
+            dx = 0.01;
         }
         if(right){
             this->invert(false);
@@ -77,22 +77,22 @@ void Fawzy::movehoriz(bool r){
 void Fawzy::movevertic(bool u){
     if(u){
         if(y < 3){
-            dy = 0.2;
+            dy = 0.004;
         }
     }
     else{
         if(y>-3){
-            dy = -0.2;
+            dy = -0.004;
         }
     }
 }
 
 void Fawzy::updateShear(){
     if(inc){
-        shearvalue+=0.3;
+        shearvalue+=0.01;
     }
     else{
-        shearvalue-=0.3;
+        shearvalue-=0.01;
     }
     if(shearvalue >= 0.5f){
         inc = false;

@@ -35,6 +35,7 @@ glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC
 glGenBuffers(1, &normbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normbuffer);
 glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+typeNumber = 4;
 }
 bool Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     updateShear();

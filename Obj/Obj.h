@@ -33,6 +33,8 @@ public:
     float xmax;
     float ymin;
     float ymax;
+    bool isScaled;
+    int typeNumber;
     Obj(float x , float y , float z , float s, GLuint TextureID,
          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
     virtual void setTranslation(float x, float y, float z);

@@ -28,10 +28,7 @@ Shark::Shark(float x , float y , float z , float s , GLuint TextureID,
     if(x>= 8){
         this->invert(false);
     }
-    xmin = 0.83;
-    xmax = -1.33;
-    ymin = 0.5;
-    ymax = -0.5;
+    typeNumber = 3;
 }
 void Shark::setScaling(float s){
     Obj::setScaling(s);
@@ -47,10 +44,10 @@ bool Shark::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 }
 void Shark::updateShear(){
     if(inc){
-        shearvalue+=0.3;
+        shearvalue+=0.01;
     }
     else{
-        shearvalue-=0.3;
+        shearvalue-=0.01;
     }
     if(shearvalue >= 1.0f){
         inc = false;
@@ -65,11 +62,8 @@ void Shark::invert(bool z){
     body->invert(true);
     ScalingMatrix[0].x = - ScalingMatrix[0].x;
     float temp = xmin;
-    xmin = ymax;
+    xmin = xmax;
     xmax = temp;
-    temp = ymin;
-    ymin = ymax;
-    ymax = temp;
 }
 void Shark::updateTranslation(){
     body->updateTranslation();
