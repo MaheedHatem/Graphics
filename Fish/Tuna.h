@@ -7,9 +7,9 @@ private:
     float shearvalue;
     bool inc;
 protected:
-FishPart* eyes;
-FishPart* body;
-FishPart* mouth;
+    FishPart* eyes;
+    FishPart* body;
+    FishPart* mouth;
 public:
     Tuna(float x , float y , float z , float s, GLuint TextureID,
          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);

@@ -4,7 +4,6 @@
 #include "FishPart.h"
 class Shark : public Obj {
 private:
-    void updateShear();
     float shearvalue;
     bool inc;
 protected:
@@ -16,6 +15,7 @@ public:
     void updateTranslation();
     void setTranslation(float x, float y, float z);
     void setScaling(float s);
+    void updateShear();
     void invert(bool z);
     bool draw( glm::mat4 ViewMatrix,glm::mat4 ProjectionMatrix);
 };

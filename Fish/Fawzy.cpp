@@ -28,12 +28,14 @@ Fawzy::Fawzy(float x , float y , float z , float s , GLuint TextureID,
     this->x = x;
     this->y = y;
     this->z = z;
+    this->s = s;
     dx = 0;
     dy = 0;
     right = true;
+    xMouthPosition = -0.83;
+    yMouthPosition = -0.22;
 }
 void Fawzy::setScaling(float s){
-    Obj::setScaling(s);
     body->setScaling(s);
 }
 void Fawzy::setTranslation(float x, float y, float z){
@@ -104,4 +106,8 @@ void Fawzy::updateShear(){
 void Fawzy::invert(bool z){
     body->invert(false);
     ScalingMatrix[0].x = - ScalingMatrix[0].x;
+
+    float temp = xmin;
+    xmin = xmax;
+    xmax = temp;
 }

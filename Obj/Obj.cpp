@@ -30,15 +30,19 @@ Obj::Obj(float x , float y , float z , float s, GLuint TextureID,
     this->vertexPosition_modelspaceID = vertexPosition_modelspaceID;
     this->MatrixID = MatrixID;
     this->TextureID = TextureID;
-
-
+    this->x = x;
+    this->y = y;
+    this->z = z;
 }
 void Obj::setTranslation(float x, float y, float z){
     this->TranslationMatrix = translate(mat4(), vec3(x, y, z));
 }
 
 void Obj::setScaling(float s){
-     this->ScalingMatrix = scale(mat4(), vec3(s, s, s));
+     if (this->ScalingMatrix[0].x < 0)
+        this->ScalingMatrix = scale(mat4(), vec3(-s, s, s));
+     else
+        this->ScalingMatrix = scale(mat4(), vec3(s, s, s));
 }
 void Obj::invert(bool z){
 

@@ -4,9 +4,6 @@
 #include "FishPart.h"
 class Fawzy : public Obj {
 private:
-    float x;
-    float y;
-    float z;
     float dx;
     float dy;
     bool right;
@@ -16,6 +13,11 @@ protected:
 FishPart* body;
 
 public:
+    float x;
+    float y;
+    float z;
+    float xMouthPosition;
+    float yMouthPosition;
     Fawzy(float x , float y , float z , float s, GLuint TextureID,
          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
     void updateShear();

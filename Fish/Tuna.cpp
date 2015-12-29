@@ -30,6 +30,10 @@ Tuna::Tuna(float x , float y , float z , float s , GLuint TextureID,
     if(x>= 8){
         this->invert(false);
     }
+    xmin = 0.46;
+    xmax = -0.8;
+    ymin = 0.2592;
+    ymax = -0.27;
 }
 void Tuna::setScaling(float s){
     Obj::setScaling(s);
@@ -70,6 +74,8 @@ void Tuna::updateShear(){
 }
 void Tuna::updateTranslation(){
     body->updateTranslation();
+    this->x = body->x;
+    this->y = body->y;
     mouth->updateTranslation();
     eyes->updateTranslation();
 }
@@ -78,4 +84,10 @@ void Tuna::invert(bool z){
     mouth->invert(false);
     eyes->invert(false);
     ScalingMatrix[0].x = -ScalingMatrix[0].x;
+    float temp = xmin;
+    xmin = ymax;
+    xmax = temp;
+    temp = ymin;
+    ymin = ymax;
+    ymax = temp;
 }

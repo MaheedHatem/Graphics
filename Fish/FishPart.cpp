@@ -59,7 +59,7 @@ void FishPart::setTranslation(float x, float y, float z){
     this->z = z;
 }
 void FishPart::updateTranslation() {
-    x+= dx;
+    this->x+= dx;
 }
 
 bool FishPart::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){

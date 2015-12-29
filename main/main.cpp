@@ -60,14 +60,21 @@ Tuna* GenerateTunaFish() {
     int signY = RandomSign();
     float x = signX* ((rand()%2) + 8); // *8
     float y = signY* ((rand()%300)*0.01); // rand()%6
-    return new Tuna(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+    return new Tuna(x,y,0,0.8,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 Salmon* GenerateSalmonFish() {
     int signX = RandomSign();
     int signY = RandomSign();
     float x = signX* ((rand()%2) + 8);
     float y = signY* ((rand()%300)*0.01);
-    return new Salmon(x,y,0,1,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+    return new Salmon(x,y,0,1.2,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
+}
+Shark* GenerateSharkFish() {
+    int signX = RandomSign();
+    int signY = RandomSign();
+    float x = signX* ((rand()%2) + 8);
+    float y = signY* ((rand()%300)*0.01);
+    return new Shark(x,y,0,1.3,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 
 
@@ -194,7 +201,9 @@ int main( void )
 
     glUseProgram(programID);
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-
+    int FishCounter = 0;
+    int currentLevel = 1;
+       int counter1=0, counter2=0;
     do{
 
         // Clear the screen
@@ -226,16 +235,48 @@ int main( void )
 
         double currentTime = glfwGetTime();
         lastFrameTime3 = currentTime;
-        if ( currentTime - lastTime3 >= 1 ){
-            lastTime3 += 1;
+        if (currentTime - lastTime3 >= 1 ){
+             lastTime3 += 1;
             if (Fish.size()<15) {
-                int random = rand()%2;
-                if (random == 1)
-                 Fish.push_back(GenerateTunaFish());
-                else
-                 Fish.push_back(GenerateSalmonFish());
+                if(currentLevel == 1) {
+                    if (counter1%2==0 || counter1 %5==0) //0,2,4,5,6,8,10,12,14    9/15
+                        Fish.push_back(GenerateTunaFish());
+                    else if (counter1%3==0 || counter1 >10) //3,9,11,13    4/15
+                        Fish.push_back(GenerateSalmonFish());
+                    else if (counter1%2!=0)  //1,7 2/15
+                        Fish.push_back(GenerateSharkFish());
+                    if (counter1<15)
+                        counter1++;
+                    else
+                        counter1=0;
+                }
+                else if (currentLevel == 2) {
+                    if (counter2%2==0 || counter2%3 ==0) {
+                        int random = rand()%2;
+                        if (random == 1)
+                            Fish.push_back(GenerateTunaFish());
+                        else
+                            Fish.push_back(GenerateSalmonFish());
+                    }
+                    else
+                        Fish.push_back(GenerateSharkFish());
+                    if (counter2<15)
+                        counter2++;
+                    else
+                        counter2=0;
+                }
+                else {
+                    int random = rand()%3;
+                    if (random == 0)
+                        Fish.push_back(GenerateTunaFish());
+                    else if (random == 1)
+                        Fish.push_back(GenerateSalmonFish());
+                    else
+                        Fish.push_back(GenerateSharkFish());
+                }
             }
         }
+
 
         ground->draw(ViewMatrix, ProjectionMatrix);
 
@@ -276,8 +317,9 @@ int main( void )
         lastFrameTime2 = currentTime;
         if ( currentTime - lastTime2 >= 0.1 ){
             lastTime2 += 0.1;
-            for(int i=0; i<Fish.size(); i++)
+            for(int i=0; i<Fish.size(); i++) {
                 Fish.at(i)->updateTranslation();
+            }
         }
 
         for (int i=0; i<Fish.size(); i++){
@@ -286,7 +328,35 @@ int main( void )
                 i--;
             }
         }
-
+        //Collision Detection
+        for (int i=0; i<Fish.size(); i++) {
+            float fawzyMouthPositionX = fawzy->x; // round(fawzy->x + fawzy->xMouthPosition);
+            float fawzyMouthPositionY = fawzy->y; // + fawzy->yMouthPosition);
+            if (Fish.at(i)->s >1) {
+                Fish.at(i)->xmin*= Fish.at(i)->s;
+                Fish.at(i)->xmax*= Fish.at(i)->s;
+                Fish.at(i)->ymin*= Fish.at(i)->s;
+                Fish.at(i)->ymax*= Fish.at(i)->s;
+            }
+            float xmin = Fish.at(i)->x - Fish.at(i)->xmin;
+            float xmax = Fish.at(i)->x - Fish.at(i)->xmax;
+            float ymin = Fish.at(i)->y - Fish.at(i)->ymin;
+            float ymax = Fish.at(i)->y - Fish.at(i)->ymax;
+            if(fawzyMouthPositionX < xmax && fawzyMouthPositionX > xmin
+                    && fawzyMouthPositionY < ymax && fawzyMouthPositionY > ymin) {
+                Fish.erase(Fish.begin()+i);
+                FishCounter++;
+                i--;
+            }
+        }
+        if (FishCounter == 10 && currentLevel == 1) {
+            currentLevel++;
+            fawzy->setScaling(0.8);
+        }
+        else if(FishCounter == 20 && currentLevel == 2) {
+            currentLevel++;
+            fawzy->setScaling(1.1);
+        }
         fawzy->draw(ViewMatrix,ProjectionMatrix);
 
         glDisableVertexAttribArray(vertexPosition_modelspaceID);

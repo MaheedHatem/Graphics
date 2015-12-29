@@ -30,6 +30,10 @@ Salmon::Salmon(float x , float y , float z , float s , GLuint TextureID,
     if(x>= 8){
         this->invert(false);
     }
+    xmin = 0.47;
+    xmax = -0.95;
+    ymin = 0.284;
+    ymax = -0.3;
 }
 void Salmon::setScaling(float s){
     Obj::setScaling(s);
@@ -71,10 +75,18 @@ void Salmon::updateTranslation(){
     body->updateTranslation();
     mouth->updateTranslation();
     eyes->updateTranslation();
+    this->x = body->x;
+    this->y = body->y;
 }
 void Salmon::invert(bool z){
     body->invert(false);
     mouth->invert(false);
     eyes->invert(false);
     ScalingMatrix[0].x = - ScalingMatrix[0].x;
+    float temp = xmin;
+    xmin = ymax;
+    xmax = temp;
+    temp = ymin;
+    ymin = ymax;
+    ymax = temp;
 }

@@ -25,6 +25,14 @@ public:
     static GLuint ModelMID;
     static GLuint ModelInvMID;
     static GLuint vertexNormID;
+    float x;
+    float y;
+    float z;
+    float s;
+    float xmin;
+    float xmax;
+    float ymin;
+    float ymax;
     Obj(float x , float y , float z , float s, GLuint TextureID,
          GLuint vertexUVID,GLuint vertexPosition_modelspaceID , GLuint MatrixID);
     virtual void setTranslation(float x, float y, float z);
