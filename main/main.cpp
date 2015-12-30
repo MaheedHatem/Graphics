@@ -6,6 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <unistd.h>
+#include <fstream>
 using namespace std;
 
 // Include GLEW
@@ -76,9 +77,14 @@ Shark* GenerateSharkFish() {
     return new Shark(x,y,0,1.3,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID);
 }
 
+Jellyfish* GenerateJellyFish(){
+    float x = (rand()%16)-8;
+    return new Jellyfish(x,4,1.2,0.2,TextureID, vertexUVID, vertexPosition_modelspaceID, MatrixID , "Jellyfish.bmp","Jellyfish.obj");
+}
 
 int main( void )
 {
+    bool RedLight = false;
     // Initialise GLFW
     srand (time(NULL));
     if( !glfwInit() )
@@ -142,8 +148,6 @@ int main( void )
     Obj::ModelInvMID = glGetUniformLocation(programID, "MInv");
 
     Obj* ground = new Ground(0,-7,15,1,TextureID,vertexUVID, vertexPosition_modelspaceID,MatrixID,"groundTex.bmp","ground.obj");
-    Obj* jellyfish = new Jellyfish(0,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
-    Obj* jellyfish2 = new Jellyfish(5,0,0,0.3,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Jellyfish.bmp","Jellyfish.obj");
     Obj* star=new Star(-3,2,0,0.2,TextureID,vertexUVID, vertexPosition_modelspaceID, MatrixID,"Star.bmp","Star.obj");
     Obj* bg = new Ground(0,-7,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"BG2.bmp","BG.obj");
   //  Obj* ceil = new Ground(0,10,20,1,TextureID,vertexUVID, vertexPosition_modelspaceID,  MatrixID,"water.bmp","Ceil.obj");
@@ -170,6 +174,7 @@ int main( void )
     Obj* plant2 = new Reef(6.3,-7.3,1.5,1.8,TextureID, vertexUVID, vertexPosition_modelspaceID,  MatrixID, "reefxx.bmp", "reef1.obj");
 
     std::vector<Obj*> Fish;
+    std::vector<Obj*> JellyFish;
 
     int plants_size = 12;
     std::vector<Obj*> plants(plants_size);
@@ -196,18 +201,34 @@ int main( void )
     double lastTime1 = glfwGetTime(); //for shearing
     double lastTime2 = glfwGetTime(); //for translation
     double lastTime3 = glfwGetTime(); //for generation
+    double lastTime4 = glfwGetTime(); //for red screen
+    double lastTimeJelly = glfwGetTime(); //for jellyfish
     double lastFrameTime1 = lastTime1;
     double lastFrameTime2 = lastTime2;
     double lastFrameTime3 = lastTime3;
+    double lastFrameTime4 = lastTime4;
+    double lastFrameTimeJelly = lastTimeJelly;
+
 
     glUseProgram(programID);
     GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
     int FishCounter = 0;
+    int score=0;
     int currentLevel = 1;
     int counter1=0, counter2=0;
     int lives = 3;
+    bool Firstgame = true;
+    bool GameOver = false;
     initText2D( "Holstein.DDS" );
+
+    GLuint LightColorID = glGetUniformLocation(programID, "LightColor");
+    glm::vec3 lightColor = glm::vec3(1.0, 1.0, 1.0);
+    glUniform3f(LightColorID, lightColor.x, lightColor.y, lightColor.z);
+
     do{
+        double  currentTime = glfwGetTime();
+
+
 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -221,7 +242,92 @@ int main( void )
         glm::mat4 ProjectionMatrix = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0 ,0, -10),glm::vec3(0,0,0),glm::vec3(0,1,0));
+        if(Firstgame){
+        glClearColor(0.176470588f, 0.443137255f, 0.768627451f, 0.0f);
+        char start[256];
+        sprintf(start,"Press Enter" );
+        printText2D(start, 75, 500, 60);
+        sprintf(start, " To Start");
+        printText2D(start, 75, 400, 60);
+        sprintf(start," Press ESC" );
+        printText2D(start, 75, 200, 60);
+        sprintf(start, "  To Exit");
+        printText2D(start, 75, 100, 60);
+        if(glfwGetKey(window,GLFW_KEY_ENTER) == true){
+            Firstgame = false;
+             lastTime1 = glfwGetTime(); //for shearing
+             lastTime2 = glfwGetTime(); //for translation
+             lastTime3 = glfwGetTime(); //for generation
+             lastTimeJelly = glfwGetTime(); //for jellyfish
+             lastFrameTime1 = lastTime1;
+             lastFrameTime2 = lastTime2;
+             lastFrameTime3 = lastTime3;
+             lastFrameTimeJelly = lastTimeJelly;
 
+        }
+        }
+        else if(GameOver){
+             char start[256];
+             Fish.clear();
+             JellyFish.clear();
+             glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+             sprintf(start,"GameOver" );
+             printText2D(start, 150, 300, 60);
+             sprintf(start, "Score= %d " , score);
+             printText2D(start, 150, 200, 60);
+
+             ifstream input;
+             ofstream output;
+             int highscore;
+
+             input.open("highscore",ios::in);
+             input>>highscore;
+             input.close();
+             if (highscore < score)
+             {
+                 output.open("highscore",ios::out);
+                 highscore=score;
+                 output<<highscore;
+                 output.close();
+             }
+
+             sprintf(start, "Highscore=%d " , highscore);
+             printText2D(start, 5, 100, 60);
+             glfwSwapBuffers(window);
+             glfwPollEvents();
+             //sleep(5);
+
+             for (int i=0;i<3;i++){
+                 sprintf(start, "Starting in");
+                 printText2D(start, 70, 450, 60);
+                 sprintf(start,"%d",3-i);
+                 printText2D(start, 200+i*150, 400, 60);
+                 glfwSwapBuffers(window);
+                 glfwPollEvents();
+                 sleep(1);
+             }
+
+
+             lastTime1 = glfwGetTime(); //for shearing
+             lastTime2 = glfwGetTime(); //for translation
+             lastTime3 = glfwGetTime(); //for generation
+             lastTimeJelly = glfwGetTime(); //for jellyfish
+             lastFrameTime1 = lastTime1;
+             lastFrameTime2 = lastTime2;
+             lastFrameTime3 = lastTime3;
+             lastFrameTimeJelly = lastTimeJelly;
+             FishCounter = 0;
+             fawzy->setScaling(0.5);
+             lives = 3;
+             score = 0;
+             currentLevel = 1;
+             counter1=0;
+             counter2=0;
+             GameOver = false;
+
+        }
+        else{
         //Moving Fawzy
         if (glfwGetKey( window, GLFW_KEY_LEFT) ==GLFW_PRESS) {
             fawzy->movehoriz(false);
@@ -236,7 +342,7 @@ int main( void )
             fawzy->movevertic(false);
         }
 
-        double currentTime = glfwGetTime();
+        currentTime = glfwGetTime();
         lastFrameTime3 = currentTime;
         if (currentTime - lastTime3 >= 1 ){
              lastTime3 += 1;
@@ -278,9 +384,15 @@ int main( void )
                         Fish.push_back(GenerateSharkFish());
                 }
             }
+        } 
+
+        currentTime = glfwGetTime();
+        lastFrameTimeJelly = currentTime;
+        if ( currentTime - lastTimeJelly >= 6/currentLevel ){
+            lastTimeJelly += 10/currentLevel;
+            JellyFish.push_back((GenerateJellyFish()));
         }
 
-        //ceil->draw(ViewMatrix, ProjectionMatrix);
         ground->draw(ViewMatrix, ProjectionMatrix);
         bgcont->draw(ViewMatrix, ProjectionMatrix);
         bg->draw(ViewMatrix, ProjectionMatrix);
@@ -315,20 +427,31 @@ int main( void )
             fawzy->updateShear();
             for(int i=0; i<Fish.size(); i++)
                 Fish.at(i)->updateShear();
+            for(int i=0; i<JellyFish.size(); i++)
+                JellyFish.at(i)->updateShear();
         }
 
         currentTime = glfwGetTime();
         lastFrameTime2 = currentTime;
-        if ( currentTime - lastTime2 >= 0.1 ){
-            lastTime2 += 0.1;
+        if ( currentTime - lastTime2 >= 0.025 ){
+            lastTime2 += 0.025;
             for(int i=0; i<Fish.size(); i++) {
                 Fish.at(i)->updateTranslation();
+            }
+            for(int i=0; i<JellyFish.size(); i++) {
+                JellyFish.at(i)->updateTranslation();
             }
         }
 
         for (int i=0; i<Fish.size(); i++){
             if(!(Fish.at(i))->draw(ViewMatrix,ProjectionMatrix)){
                 Fish.erase(Fish.begin()+i);
+                i--;
+            }
+        }
+        for (int i=0; i<JellyFish.size(); i++){
+            if(!(JellyFish.at(i))->draw(ViewMatrix,ProjectionMatrix)){
+                JellyFish.erase(JellyFish.begin()+i);
                 i--;
             }
         }
@@ -342,20 +465,46 @@ int main( void )
             xmax = Fish.at(i)->x+0.8*fawzy->s;
             ymin = Fish.at(i)->y-1.2*fawzy->s;
             ymax = Fish.at(i)->y+1*fawzy->s;
+            if(Fish.at(i)->typeNumber == 3){
+                xmin = Fish.at(i)->x-1.2*fawzy->s;
+                xmax = Fish.at(i)->x+1.2*fawzy->s;
+                ymin = Fish.at(i)->y-1.2*fawzy->s;
+                ymax = Fish.at(i)->y+1.5*fawzy->s;
+            }
 
             if(fawzyMouthPositionX < xmax && fawzyMouthPositionX > xmin
                     && fawzyMouthPositionY < ymax && fawzyMouthPositionY > ymin) {
                 if (currentLevel==1 && Fish.at(i)->typeNumber > 1) {
                     lives--;
+                    RedLight = true;
                     currentLevel = 1;
                     FishCounter=-1;
+                    if(Fish.at(i)->typeNumber==2){
+                        score-=2;
+                    }
+                    else if (Fish.at(i)->typeNumber == 3) {
+                        score-=3;
+                    }
                 }
                 else if (currentLevel==2 && Fish.at(i)->typeNumber > 2) {
                     lives--;
+                    RedLight = true;
                     currentLevel = 1;
                     fawzy->setScaling(0.5);
                     FishCounter=-1;
+                    score-=3;
                 }
+
+                if(Fish.at(i)->typeNumber == 1){
+                    score++;
+                }
+                else if (Fish.at(i)->typeNumber == 2) {
+                    score+=2;
+                }
+                else if (Fish.at(i)->typeNumber == 3){
+                    score+=3;
+                }
+
                 Fish.erase(Fish.begin()+i);
                 FishCounter++;
                 i--;
@@ -369,21 +518,62 @@ int main( void )
             currentLevel++;
             fawzy->setScaling(1.1);
         }
-        fawzy->draw(ViewMatrix,ProjectionMatrix);
+        //Collision Detection jellyfish
+        for (int i=0; i<JellyFish.size(); i++) {
+            float fawzyMouthPositionX = fawzy->x;
+            float fawzyMouthPositionY = fawzy->y;
+            float xmin, xmax, ymin, ymax;
+            xmin = JellyFish.at(i)->x-0.5;
+            xmax = JellyFish.at(i)->x+0.35;
+            ymin = JellyFish.at(i)->y-0.8;
+            ymax = JellyFish.at(i)->y+0.2;
 
+            if(fawzyMouthPositionX < xmax && fawzyMouthPositionX > xmin
+                    && fawzyMouthPositionY < ymax && fawzyMouthPositionY > ymin) {
+                if (currentLevel==1) {
+                    lives--;
+                    RedLight = true;
+                    currentLevel = 1;
+                    FishCounter = 0;
+                }
+                else if (currentLevel==2) {
+                    lives--;
+                    RedLight = true;
+                    currentLevel = 1;
+                    fawzy->setScaling(0.5);
+                    FishCounter = 0;
+                }
+                else if(currentLevel ==3){
+                    lives--;
+                    RedLight = true;
+                    currentLevel = 2;
+                    fawzy->setScaling(0.8);
+                    FishCounter = 5;
+                }
+                JellyFish.erase(JellyFish.begin()+i);
+                i--;
+            }
+        }
+
+        fawzy->draw(ViewMatrix,ProjectionMatrix);
+        char text[256];
+        sprintf(text,"Level:  %d   Lives:   %d   Score   %d", currentLevel,lives , score );
+        printText2D(text, 10, 550, 20);
+}
         glDisableVertexAttribArray(vertexPosition_modelspaceID);
         glDisableVertexAttribArray(vertexUVID);
         glDisableVertexAttribArray(Obj::vertexNormID);
-        char text[256];
-        sprintf(text,"%.2f sec", glfwGetTime() );
-        printText2D(text, 10, 400, 60);
+
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
+        if(lives == 0 ){
+            GameOver = true;
+        }
 
     } // Check if the ESC key was pressed or the window was closed
     while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-           glfwWindowShouldClose(window) == 0 && lives > 0 );
+           glfwWindowShouldClose(window) == 0 );
 
     glDeleteProgram(programID);
     glDeleteTextures(1, &TextureID);

@@ -66,6 +66,8 @@ add_executable(main
 	common/texture.hpp
 	common/objloader.cpp
 	common/objloader.hpp
+	common/text2D.hpp
+	common/text2D.cpp
 	Obj/Obj.cpp
 	Obj/Obj.h
 	Fish/Tuna.cpp
@@ -78,19 +80,23 @@ add_executable(main
 	Fish/Salmon.h
 	Fish/FishPart.cpp
 	Fish/FishPart.h
-<<<<<<< HEAD
+
 	Environ/Ground.cpp
 	Environ/Ground.h
 	Environ/Waves.cpp
 	Environ/Waves.h
-=======
+
 	Background/Stone.h
 	Background/Stone.cpp
 	Background/Reef.h
 	Background/Reef.cpp
->>>>>>> 733e88c697f032019d6dd2e3c9c1589e726086bb
+
 	main/TransformVertexShader.vertexshader
 	main/TextureFragmentShader.fragmentshader
+	Fish/Jellyfish.cpp
+	Fish/Jellyfish.h
+	Fish/Star.h
+	Fish/Star.cpp
 )
 target_link_libraries(main
 	${ALL_LIBS}

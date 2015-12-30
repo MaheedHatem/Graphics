@@ -35,10 +35,17 @@ glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC
 glGenBuffers(1, &normbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, normbuffer);
 glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+
 typeNumber = 4;
+incY=true;
+inc=true;
+dy = (rand()%20 + 5) * 0.0025;
+shearvalue=0;
+
 }
 bool Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
-    updateShear();
+    //updateShear();
+    this->setTranslation(x,y,z);
     glm::mat4 ModelMatrix = TranslationMatrix* ScalingMatrix * ShearMatrix;
     glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
@@ -91,7 +98,7 @@ bool Jellyfish::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return true;
+  return (!(!incY && y>4));
 }
 void Jellyfish::setShear(float s){
     ShearMatrix[2].x = s;
@@ -112,4 +119,23 @@ void Jellyfish::updateShear(){
     }
     ShearMatrix[1].x = shearvalue;
     ShearMatrix[2].x = shearvalue;
+}
+
+void Jellyfish::setTranslation(float x, float y, float z){
+    Obj::setTranslation(x , y , z);
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+void Jellyfish::updateTranslation() {
+    if(incY){
+        y-=dy;
+    }
+    else{
+        y+=dy;
+    }
+    if (y<=-3){
+        incY=false;
+    }
 }

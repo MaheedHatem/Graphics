@@ -42,11 +42,11 @@ this->y = y;
 this->z = z;
 srand(time(NULL));
     if(x <= -8){
-        dx = (rand()%35 + 5) * 0.01;
+        dx = (rand()%25 + 5) * 0.0025;
 
     }
     else if (x >= 8){
-        dx = -(rand()%35 + 5) * 0.01;
+        dx = -(rand()%25 + 5) * 0.0025;
     }
     else{
         dx = 0;

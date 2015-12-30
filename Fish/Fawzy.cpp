@@ -77,12 +77,12 @@ void Fawzy::movehoriz(bool r){
 void Fawzy::movevertic(bool u){
     if(u){
         if(y < 3){
-            dy = 0.004;
+            dy = 0.008;
         }
     }
     else{
         if(y>-3){
-            dy = -0.004;
+            dy = -0.008;
         }
     }
 }
@@ -110,4 +110,5 @@ void Fawzy::invert(bool z){
     float temp = xmin;
     xmin = xmax;
     xmax = temp;
+    xMouthPosition = - xMouthPosition;
 }

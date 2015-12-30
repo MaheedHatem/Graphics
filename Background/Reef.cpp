@@ -96,10 +96,10 @@ bool Reef::draw(mat4 ViewMatrix, mat4 ProjectionMatrix){
 }
 void Reef::updateShear(){
     if(inc){
-        shearvalue+=0.001;
+        shearvalue+=0.0001;
     }
     else{
-        shearvalue-=0.001;
+        shearvalue-=0.0001;
     }
     if(shearvalue >= 0.1f){
         inc = false;
